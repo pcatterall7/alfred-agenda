@@ -11,7 +11,7 @@ import queries
 from workflow import Workflow, ICON_SYNC
 
 TITLE = "i"
-TAGS = "a"
+PROJECT = "p"
 
 SINGLE_QUOTE = "'"
 ESC_SINGLE_QUOTE = "''"
@@ -50,10 +50,10 @@ def parse_args():
     Parses out the arguments sent to the script in the Alfred workflow.
     """
 
-    parser = argparse.ArgumentParser(description="Search Bear Notes")
+    parser = argparse.ArgumentParser(description="Search Agenda Notes")
     parser.add_argument('-t', '--type', default=TITLE,
-                        choices=[TITLE, TAGS],
-                        type=str, help='What to search for: t(i)tle, or t(a)gs?')
+                        choices=[TITLE, PROJECT],
+                        type=str, help='What to search for: t(i)tle, or (p)roject?')
     parser.add_argument('query', type=unicode,
                         nargs=argparse.REMAINDER, help='query string')
 
@@ -74,31 +74,28 @@ def execute_search_query(args):
         if SINGLE_QUOTE in query:
             query = query.replace(SINGLE_QUOTE, ESC_SINGLE_QUOTE)
 
-    if args.type == TAGS:
-        LOGGER.debug('Searching tags')
+    if args.type == PROJECT:
+        LOGGER.debug('Searching projects')
         query = query.replace('#', '')
-        tag_results = queries.search_tags_by_title(WORKFLOW, LOGGER, query)
-        note_results = queries.search_notes_by_tag_title(WORKFLOW, LOGGER, query)
-        if not tag_results:
+        project_results = queries.search_projects_by_title(WORKFLOW, LOGGER, query)
+        if not project_results:
             WORKFLOW.add_item('No search results found.')
         else:
-            for tag_result in tag_results:
-                LOGGER.debug(tag_result)
-                tag_arg = ':t:' + tag_result[0]
-                LOGGER.debug(tag_arg)
-                WORKFLOW.add_item(title='#' + tag_result[0], subtitle="Open tag",
-                                  arg=tag_arg, valid=True)
-            for note_result in note_results:
-                LOGGER.debug(note_results)
-                note_arg = ':n:' + note_result[0]
-                WORKFLOW.add_item(title=note_result[1], subtitle="Open note",
-                                  arg=note_arg, valid=True)
+            for project_result in project_results:
+                LOGGER.debug(project_result)
+                WORKFLOW.add_item(title=project_result[1], subtitle="Open tag",
+                                  arg=project_result[0], valid=True)
+            #TODO: show notes within the project too
+            # for note_result in note_results:
+            #     LOGGER.debug(note_results)
+            #     note_arg = ':n:' + note_result[0]
+            #     WORKFLOW.add_item(title=note_result[1], subtitle="Open note",
+            #                       arg=note_arg, valid=True)
 
     else:
         LOGGER.debug('Searching notes')
         title_results = queries.search_notes_by_title(WORKFLOW, LOGGER, query)
-        text_results = queries.search_notes_by_text(WORKFLOW, LOGGER, query)
-        if not title_results and not text_results:
+        if not title_results:
             WORKFLOW.add_item('No search results found.')
         else:
             note_ids = []
@@ -106,10 +103,6 @@ def execute_search_query(args):
                 LOGGER.debug(title_result)
                 WORKFLOW.add_item(title=title_result[1], subtitle="Open note", arg=title_result[0], valid=True)
                 note_ids.append(title_result[0])
-            for text_result in text_results:
-                if text_result[0] not in note_ids:
-                    LOGGER.debug(text_result)
-                    WORKFLOW.add_item(title=text_result[1], subtitle="Open note", arg=text_result[0], valid=True)
 
 
 if __name__ == '__main__':
