@@ -8,7 +8,10 @@ Main search script for alfred-bear workflow.
 import sys
 import argparse
 import queries
+import io
+import ccl_bplist
 from workflow import Workflow, ICON_SYNC
+
 
 TITLE = "i"
 PROJECT = "p"
@@ -17,6 +20,8 @@ SINGLE_QUOTE = "'"
 ESC_SINGLE_QUOTE = "''"
 
 LOGGER = None
+
+ccl_bplist.set_object_converter(ccl_bplist.NSKeyedArchiver_common_objects_convertor)
 
 # Update workflow from GitHub repo
 UPDATE_SETTINGS = {'github_slug': 'chrisbro/alfred-bear'}
@@ -61,6 +66,14 @@ def parse_args():
     args = parser.parse_args(WORKFLOW.args)
     return args
 
+def is_deleted(title_result):
+    """
+    Takes a single note query result, deserialises the note properties, and returns if the note is deleted.
+    """
+    properties_blob = io.BytesIO(title_result[2])
+    properties_plist = ccl_bplist.load(properties_blob)
+    properties = ccl_bplist.deserialise_NsKeyedArchiver(properties_plist)
+    return properties.get('markedDeleted')
 
 def execute_search_query(args):
     """
@@ -76,21 +89,23 @@ def execute_search_query(args):
 
     if args.type == PROJECT:
         LOGGER.debug('Searching projects')
-        query = query.replace('#', '')
         project_results = queries.search_projects_by_title(WORKFLOW, LOGGER, query)
+        note_results = queries.search_notes_by_project_title(WORKFLOW, LOGGER, query)
         if not project_results:
             WORKFLOW.add_item('No search results found.')
         else:
             for project_result in project_results:
                 LOGGER.debug(project_result)
-                WORKFLOW.add_item(title=project_result[1], subtitle="Open tag",
-                                  arg=project_result[0], valid=True)
-            #TODO: show notes within the project too
-            # for note_result in note_results:
-            #     LOGGER.debug(note_results)
-            #     note_arg = ':n:' + note_result[0]
-            #     WORKFLOW.add_item(title=note_result[1], subtitle="Open note",
-            #                       arg=note_arg, valid=True)
+                project_arg = ':p:' + project_result[0]
+                WORKFLOW.add_item(title=project_result[1], subtitle="Open project",
+                                  arg=project_arg, valid=True)
+
+            for note_result in note_results:
+                if not is_deleted(note_result):
+                    LOGGER.debug(note_results)
+                    note_arg = ':n:' + note_result[0]
+                    WORKFLOW.add_item(title=note_result[1], subtitle="Open note",
+                                    arg=note_arg, valid=True)
 
     else:
         LOGGER.debug('Searching notes')
@@ -100,9 +115,10 @@ def execute_search_query(args):
         else:
             note_ids = []
             for title_result in title_results:
-                LOGGER.debug(title_result)
-                WORKFLOW.add_item(title=title_result[1], subtitle="Open note", arg=title_result[0], valid=True)
-                note_ids.append(title_result[0])
+                if not is_deleted(title_result):
+                    LOGGER.debug(title_result)
+                    WORKFLOW.add_item(title=title_result[1], subtitle="Open note", arg=title_result[0], valid=True)
+                    note_ids.append(title_result[0])
 
 
 if __name__ == '__main__':

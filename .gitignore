@@ -6,3 +6,6 @@ copyToWorkflow.sh
 bashTest.sh
 Alfred_Workflow-1.26.dist-info/*
 .idea/*
+test.py
+.vscode
+.vscode/*

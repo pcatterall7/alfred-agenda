@@ -15,11 +15,10 @@ DB_KEY = 'db_path'
 
 NOTES_BY_TITLE = (
     "SELECT "
-    "   ZIDENTIFIER, ZTITLE "
+    "   ZIDENTIFIER, ZTITLE, ZPROPERTIES "
     "FROM ZSECTION "
     "WHERE "
-    "   Z_OPT != 1 "
-    "   AND lower(ZTITLE) like lower('%{0}%') "
+    "   lower(ZTITLE) like lower('%{0}%') "
     "ORDER BY ZSTARTDATE desc"
 )
 
@@ -32,20 +31,16 @@ PROJECTS_BY_TITLE = (
     "   AND lower(ZTITLE) LIKE lower('%{0}%')"
 )
 
-#TODO: update to notes-by-project
-NOTES_BY_TAG_TITLE = (
+NOTES_BY_PROJECT_TITLE = (
     "SELECT DISTINCT"
-    "   n.ZUNIQUEIDENTIFIER, n.ZTITLE "
+    "   n.ZIDENTIFIER, n.ZTITLE, n.ZPROPERTIES "
     "FROM "
-    "   ZSFNOTE n "
-    "   INNER JOIN Z_5TAGS nt ON n.Z_PK = nt.Z_5NOTES "
-    "   INNER JOIN ZSFNOTETAG t ON nt.Z_10TAGS = t.Z_PK "
+    "   ZSECTION n "
+    "   LEFT JOIN ZDOCUMENT p ON n.ZSTOREIDENTIFIER = p.ZSTOREIDENTIFIER "
     "WHERE "
-    "   n.ZARCHIVED=0 "
-    "   AND n.ZTRASHED=0 "
-    "   AND lower(t.ZTITLE) LIKE lower('%{0}%')"
+    "   lower(p.ZTITLE) LIKE lower('%{0}%')"
     "ORDER BY "
-    "   n.ZMODIFICATIONDATE DESC")
+    "   n.ZSTARTDATE DESC")
 
 def search_notes_by_title(workflow, log, query):
     """
@@ -63,24 +58,14 @@ def search_projects_by_title(workflow, log, query):
     sql_query = PROJECTS_BY_TITLE.format(query)
     return run_query(workflow, log, sql_query)
 
-#TODO: update to notes_by_project_title
-# def search_notes_by_tag_title(workflow, log, query):
-#     """
-#     Searches for Bear notes by tag name.
-#     """
+def search_notes_by_project_title(workflow, log, query):
+    """
+    Searches for Agenda notes by project name.
+    """
 
-#     sql_query = NOTES_BY_TAG_TITLE_V6.format(query)
+    sql_query = NOTES_BY_PROJECT_TITLE.format(query)
 
-#     home = os.path.expanduser("~")
-#     if find_bear_db(log) == "{0}{1}".format(home, DB_LOCATION_OLD):
-#         sql_query = NOTES_BY_TAG_TITLE.format(query)
-
-#     try:
-#         results = run_query(workflow, log, sql_query)
-#     except:
-#         sql_query = NOTES_BY_TAG_TITLE_V7.format(query)
-#         results = run_query(workflow, log, sql_query)
-#     return results
+    return run_query(workflow, log, sql_query)
 
 
 def run_query(workflow, log, sql):
@@ -104,7 +89,6 @@ def run_query(workflow, log, sql):
     cursor.close()
     return results
 
-#TODO: clean this up to remove references to older DBS
 def find_agenda_db(log):
     """
     Finds the Agenda sqlite3 DB.
