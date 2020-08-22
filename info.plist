@@ -19,6 +19,19 @@
 				<false/>
 			</dict>
 		</array>
+		<key>D4359FC7-66BE-4020-B2BE-A9F633A7A21D</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>0796EBC2-0105-43BC-8584-9E8DB2359792</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+		</array>
 	</dict>
 	<key>createdby</key>
 	<string>Phil Catterall</string>
@@ -98,26 +111,108 @@
 			<key>version</key>
 			<integer>3</integer>
 		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>alfredfiltersresults</key>
+				<false/>
+				<key>alfredfiltersresultsmatchmode</key>
+				<integer>0</integer>
+				<key>argumenttreatemptyqueryasnil</key>
+				<false/>
+				<key>argumenttrimmode</key>
+				<integer>0</integer>
+				<key>argumenttype</key>
+				<integer>0</integer>
+				<key>escaping</key>
+				<integer>102</integer>
+				<key>keyword</key>
+				<string>agp</string>
+				<key>queuedelaycustom</key>
+				<integer>3</integer>
+				<key>queuedelayimmediatelyinitially</key>
+				<true/>
+				<key>queuedelaymode</key>
+				<integer>0</integer>
+				<key>queuemode</key>
+				<integer>1</integer>
+				<key>runningsubtext</key>
+				<string>Searching...</string>
+				<key>script</key>
+				<string>/usr/bin/python search.py -t p "{query}"</string>
+				<key>scriptargtype</key>
+				<integer>0</integer>
+				<key>scriptfile</key>
+				<string></string>
+				<key>subtext</key>
+				<string></string>
+				<key>title</key>
+				<string>Search Agenda Projects</string>
+				<key>type</key>
+				<integer>0</integer>
+				<key>withspace</key>
+				<true/>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.input.scriptfilter</string>
+			<key>uid</key>
+			<string>D4359FC7-66BE-4020-B2BE-A9F633A7A21D</string>
+			<key>version</key>
+			<integer>3</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>concurrently</key>
+				<false/>
+				<key>escaping</key>
+				<integer>102</integer>
+				<key>script</key>
+				<string>orig_query={query}
+echo $orig_query
+if [[ $orig_query == ":p:"* ]]; then
+	new_query=${orig_query:3}
+	open "agenda://x-callback-url/open-project?identifier=$new_query"
+else
+	new_query=${orig_query:3}
+	open "agenda://x-callback-url/open-note?identifier=$new_query"
+fi</string>
+				<key>scriptargtype</key>
+				<integer>0</integer>
+				<key>scriptfile</key>
+				<string></string>
+				<key>type</key>
+				<integer>0</integer>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.action.script</string>
+			<key>uid</key>
+			<string>0796EBC2-0105-43BC-8584-9E8DB2359792</string>
+			<key>version</key>
+			<integer>2</integer>
+		</dict>
 	</array>
 	<key>readme</key>
-	<string># Bear Alfred Workflow
+	<string># Agenda Alfred Workflow
 
-[Alfred 3 workflow](https://www.alfredapp.com/workflows/) to search and create notes in [Bear](http://www.bear-writer.com/).
+[Alfred 3 workflow](https://www.alfredapp.com/workflows/) to search and create notes in [Agenda](http://www.agenda.com/).
 
 ## Install
-To install, download a released alfred-bear.alfredworkflow and double-click to open in Alfred 3. Easy-peasy.
+To install, download a released alfred-bear.alfredworkflow and double-click to open in Alfred 3.
 
 ## Searching and opening results 
-- `bs` -- Search for a note by title and open it in Bear.
-- `bst` -- Search for a tag (a group of notes) by tag title and open it in Bear.
-
-## Creating a new note
-- `bn` -- Create a new note with input as title. Tags optional.
-	- `bn I love notes!` -- Creates a new note with the title and text "*I love notes!*"
-	- `bn I love notes! #love #notes` -- Creates a new note with the title and text "*I love notes!*" and the tags "*#love*" and "*#notes*"</string>
+- `ag` -- Search for a note by title and open it in Agenda.
+- `agp` -- Search for a project by project title title and open it in Bear.</string>
 	<key>uidata</key>
 	<dict>
-		<key>icon</key>
+		<key>0796EBC2-0105-43BC-8584-9E8DB2359792</key>
+		<dict>
+			<key>xpos</key>
+			<integer>525</integer>
+			<key>ypos</key>
+			<integer>195</integer>
+		</dict>
+		<key>1A741966-5341-40BC-996D-68EAB30F62AA</key>
 		<dict>
 			<key>xpos</key>
 			<integer>280</integer>
@@ -131,10 +226,17 @@ To install, download a released alfred-bear.alfredworkflow and double-click to o
 			<key>ypos</key>
 			<integer>50</integer>
 		</dict>
+		<key>D4359FC7-66BE-4020-B2BE-A9F633A7A21D</key>
+		<dict>
+			<key>xpos</key>
+			<integer>280</integer>
+			<key>ypos</key>
+			<integer>195</integer>
+		</dict>
 	</dict>
 	<key>version</key>
-	<string>0.3.5</string>
+	<string>0.1</string>
 	<key>webaddress</key>
-	<string>https://github.com/chrisbro/alfred-bear</string>
+	<string>https://github.com/pcatterall7/alfred-agenda</string>
 </dict>
 </plist>
