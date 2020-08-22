@@ -3,7 +3,7 @@
 [Alfred workflow](https://www.alfredapp.com/workflows/) to search and open notes and projects in [Agenda](http://www.agenda.com/).
 
 ## Install
-To install, download a [released alfred-agenda workflow](https://github.com/chrisbro/alfred-agenda/releases/download/0.1/alfred-agenda.alfredworkflow) and double-click to open in Alfred.
+To install, download a [released alfred-agenda workflow](https://github.com/pcatterall7/alfred-agenda/releases/download/v0.1/Agenda.alfredworkflow) and double-click to open in Alfred.
 
 ## Searching and opening results 
 `ag` - Search for a note by title and open it in Agenda.
