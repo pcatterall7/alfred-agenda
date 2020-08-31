@@ -24,7 +24,7 @@ LOGGER = None
 ccl_bplist.set_object_converter(ccl_bplist.NSKeyedArchiver_common_objects_convertor)
 
 # Update workflow from GitHub repo
-UPDATE_SETTINGS = {'github_slug': 'chrisbro/alfred-bear'}
+UPDATE_SETTINGS = {'github_slug': 'pcatterall7/alfred-agenda'}
 SHOW_UPDATES = True
 
 
