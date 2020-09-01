@@ -10,6 +10,7 @@ import argparse
 import queries
 import io
 import ccl_bplist
+import time
 from workflow import Workflow, ICON_SYNC
 
 
@@ -20,6 +21,8 @@ SINGLE_QUOTE = "'"
 ESC_SINGLE_QUOTE = "''"
 
 LOGGER = None
+
+APPLE_COCOA_TIME_OFFSET = 978307200
 
 ccl_bplist.set_object_converter(ccl_bplist.NSKeyedArchiver_common_objects_convertor)
 
@@ -104,7 +107,16 @@ def execute_search_query(args):
                 if not is_deleted(note_result):
                     LOGGER.debug(note_results)
                     note_arg = ':n:' + note_result[0]
-                    WORKFLOW.add_item(title=note_result[1], subtitle="Open note",
+
+                    if note_result[3] is None:
+                        subtitle = " "
+                    else:
+                        note_date = time.localtime(note_result[3] + APPLE_COCOA_TIME_OFFSET)
+                        if note_date.tm_hour == 0 and note_date.tm_min == 0:
+                            subtitle = time.strftime('%d %b %Y', note_date)
+                        else:
+                            subtitle = time.strftime('%d %b %Y %H:%M', note_date)
+                    WORKFLOW.add_item(title=note_result[1], subtitle=subtitle,
                                     arg=note_arg, valid=True)
 
     else:
@@ -117,7 +129,15 @@ def execute_search_query(args):
             for title_result in title_results:
                 if not is_deleted(title_result):
                     LOGGER.debug(title_result)
-                    WORKFLOW.add_item(title=title_result[1], subtitle="Open note", arg=title_result[0], valid=True)
+                    if title_result[3] is None:
+                        subtitle = "Open note"
+                    else:
+                        note_date = time.localtime(title_result[3] + APPLE_COCOA_TIME_OFFSET)
+                        if note_date.tm_hour == 0 and note_date.tm_min == 0:
+                            subtitle = time.strftime('%d %b %Y', note_date)
+                        else:
+                            subtitle = time.strftime('%d %b %Y %H:%M', note_date)                 
+                    WORKFLOW.add_item(title=title_result[1], subtitle=subtitle, arg=title_result[0], valid=True)
                     note_ids.append(title_result[0])
 
 
