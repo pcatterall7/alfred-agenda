@@ -107,10 +107,15 @@ def execute_search_query(args):
                 if not is_deleted(note_result):
                     LOGGER.debug(note_results)
                     note_arg = ':n:' + note_result[0]
+
                     if note_result[3] is None:
                         subtitle = " "
                     else:
-                        subtitle = time.strftime('%d-%b-%Y %H:%M', time.localtime(note_result[3] + APPLE_COCOA_TIME_OFFSET))
+                        note_date = time.localtime(note_result[3] + APPLE_COCOA_TIME_OFFSET)
+                        if note_date.tm_hour == 0 and note_date.tm_min == 0:
+                            subtitle = time.strftime('%d %b %Y', note_date)
+                        else:
+                            subtitle = time.strftime('%d %b %Y %H:%M', note_date)
                     WORKFLOW.add_item(title=note_result[1], subtitle=subtitle,
                                     arg=note_arg, valid=True)
 
@@ -127,8 +132,12 @@ def execute_search_query(args):
                     if title_result[3] is None:
                         subtitle = "Open note"
                     else:
-                        subtitle = time.strftime('%d-%b-%Y %H:%M', time.localtime(title_result[3] + APPLE_COCOA_TIME_OFFSET))                    
-                    WORKFLOW.add_item(title=title_result[1], subtitle="Open note", arg=title_result[0], valid=True)
+                        note_date = time.localtime(title_result[3] + APPLE_COCOA_TIME_OFFSET)
+                        if note_date.tm_hour == 0 and note_date.tm_min == 0:
+                            subtitle = time.strftime('%d %b %Y', note_date)
+                        else:
+                            subtitle = time.strftime('%d %b %Y %H:%M', note_date)                 
+                    WORKFLOW.add_item(title=title_result[1], subtitle=subtitle, arg=title_result[0], valid=True)
                     note_ids.append(title_result[0])
 
 
