@@ -4,6 +4,8 @@
 <dict>
 	<key>bundleid</key>
 	<string>com.pcatterall7.agenda</string>
+	<key>category</key>
+	<string>Productivity</string>
 	<key>connections</key>
 	<dict>
 		<key>1A741966-5341-40BC-996D-68EAB30F62AA</key>
@@ -195,14 +197,14 @@ fi</string>
 	<key>readme</key>
 	<string># Agenda Alfred Workflow
 
-[Alfred 3 workflow](https://www.alfredapp.com/workflows/) to search and create notes in [Agenda](http://www.agenda.com/).
+[Alfred 3 workflow](https://www.alfredapp.com/workflows/) to search and open notes and projects in [Agenda](http://www.agenda.com/).
 
 ## Install
 To install, download a released alfred-bear.alfredworkflow and double-click to open in Alfred 3.
 
 ## Searching and opening results 
-- `ag` -- Search for a note by title and open it in Agenda.
-- `agp` -- Search for a project by project title title and open it in Bear.</string>
+- `ag` - Search for a note by title and open it in Agenda.
+- `agp` - Search for a project by project title title and open it in Agenda.</string>
 	<key>uidata</key>
 	<dict>
 		<key>0796EBC2-0105-43BC-8584-9E8DB2359792</key>
@@ -234,8 +236,10 @@ To install, download a released alfred-bear.alfredworkflow and double-click to o
 			<integer>195</integer>
 		</dict>
 	</dict>
+	<key>variablesdontexport</key>
+	<array/>
 	<key>version</key>
-	<string>0.1</string>
+	<string>0.2</string>
 	<key>webaddress</key>
 	<string>https://github.com/pcatterall7/alfred-agenda</string>
 </dict>
