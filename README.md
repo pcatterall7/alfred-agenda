@@ -1,3 +1,5 @@
+:warning: **This repo is no longer being maintained since I don't use Agenda any more.**
+
 # Agenda Alfred Workflow
 
 [Alfred workflow](https://www.alfredapp.com/workflows/) to search and open notes and projects in [Agenda](http://www.agenda.com/).
